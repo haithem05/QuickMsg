@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "12767128042",
+    "firebase_url": "https://quickmsg-a67ef.firebaseio.com",
+    "project_id": "quickmsg-a67ef",
+    "storage_bucket": "quickmsg-a67ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12767128042:android:f6151a00142555cf",
+        "android_client_info": {
+          "package_name": "com.example.quickmsg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12767128042-po1u6susonacck2rt6efai8tkt24gpr2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quickmsg",
+            "certificate_hash": "a88b85ab288e556c95b19e42d270578dbb4a985d"
+          }
+        },
+        {
+          "client_id": "12767128042-lcv5ef1ufd0qn09buvc94enk07pvanol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATQI9WslNU6vSZz6Lc0xpbdXG3SUFgxUM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12767128042-lcv5ef1ufd0qn09buvc94enk07pvanol.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
