@@ -2,6 +2,8 @@ package com.example.quickmsg;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -18,11 +20,33 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        //mAuth =FirebaseAuth.getInstance();
+       mAuth =FirebaseAuth.getInstance();
 
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.optionn, menu);
+        super.onCreateOptionsMenu(menu);
+        return true;
+    }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.logout) {
+            mAuth.signOut();
+            sendUserToLogin();}
+            if (item.getItemId() == R.id.setings) {
+
+            }
+
+            if (item.getItemId() == R.id.FindFriends) {
+
+            }
+
+
+            return true;
+
+    }
   /*  @Override
     protected void onStart() {
         super.onStart();
@@ -43,13 +67,10 @@ public class DashboardActivity extends AppCompatActivity {
 
 
 
-
-
-
-    private void sendUserToFirstActivity() {
-
-        Intent firstActIntent = new Intent(DashboardActivity.this,MainActivity.class);
-        startActivity(firstActIntent);
+    private void sendUserToLogin() {
+        Intent loginIntent = new Intent(DashboardActivity.this, LoginActivity.class);
+        startActivity(loginIntent);
         finish();
     }
+
 }

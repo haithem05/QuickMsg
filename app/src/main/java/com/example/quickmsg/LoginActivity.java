@@ -14,7 +14,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,8 +28,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText email , password ;
     private TextView needNewAcount;
     private FirebaseAuth nAuth;
+    private DatabaseReference rootRef;
     private ProgressDialog LoadingnBar;
-    private FirebaseUser CurrentUser;
+
+
 
 
     @Override
@@ -36,8 +39,9 @@ public class LoginActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //nAuth = FirebaseAuth.getInstance();
-        //CurrentUser = nAuth.getCurrentUser();
+        nAuth = FirebaseAuth.getInstance();
+        rootRef=FirebaseDatabase.getInstance().getReference();
+
 
         initializeFields();
 
@@ -84,9 +88,13 @@ public class LoginActivity extends AppCompatActivity {
                                                @Override
                                                public void onComplete(@NonNull Task<AuthResult> task) {
                                                    if (task.isSuccessful()) {
+                                                       String currentUserID=nAuth.getCurrentUser().getUid();
+                                                       rootRef.child("users").child(currentUserID).setValue("");
+
+
                                                        Toast.makeText(LoginActivity.this, "Account Created successfully...", Toast.LENGTH_SHORT).show();
                                                        LoadingnBar.dismiss();
-                                                       sendUserMainActivity();
+                                                       sendUserToDashboard();
                                                    } else {
                                                        String message = task.getException().toString();
                                                        Toast.makeText(LoginActivity.this, "Error :" + message, Toast.LENGTH_SHORT).show();
@@ -107,9 +115,10 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void sendUserMainActivity (){
-        Intent intent = new Intent(this,DashboardActivity.class);
-        startActivity(intent);
+    private void sendUserToDashboard () {
+        Intent dashboardIntent = new Intent(LoginActivity.this,DashboardActivity.class);
+        dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(dashboardIntent);
         finish();
     }
 
@@ -147,19 +156,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-  /*  @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (currentUser==null){
-            sendUserToSingUupActivity();
-        }
-    }
-
-    private void sendUserToSingUupActivity() {
-        Intent loginIntent = new Intent(LoginActivity.this,SignUpActivity.class);
-        startActivity(loginIntent);
-    }*/
 
 
     private void sendUserToSignup () {

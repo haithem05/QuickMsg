@@ -38,7 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
            alreadyHaveAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendUserToLogin();
+                sendUserToDashboard();
             }
         });
            SignUpButton.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +77,7 @@ public class SignUpActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        sendUserToLogin();
+                        sendUserToDashboard();
                         Toast.makeText(SignUpActivity.this, "Account Created successfully...", Toast.LENGTH_SHORT).show();
                         LoadingnBar.dismiss();
                     } else {
@@ -97,9 +97,10 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void sendUserToLogin () {
-        Intent loginIntent = new Intent(SignUpActivity.this,DashboardActivity.class);
-        startActivity(loginIntent);
+    private void sendUserToDashboard () {
+        Intent dashboardIntent = new Intent(SignUpActivity.this,DashboardActivity.class);
+        dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(dashboardIntent);
         finish();
     }
 
@@ -122,6 +123,7 @@ public class SignUpActivity extends AppCompatActivity {
         LoadingnBar.setCanceledOnTouchOutside(true);
         LoadingnBar.show();
     }
+
 }
 
 

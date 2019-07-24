@@ -2,8 +2,6 @@ package com.example.quickmsg;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -80,25 +78,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(loginIntent);
     }*/
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.option, menu);
-        super.onCreateOptionsMenu(menu);
-        return true;
-    }
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-        if (item.getItemId()== R.id.logout){
-
-        }
-        if (item.getItemId()== R.id.setings){
-
-        }
-
-        if (item.getItemId()== R.id.FindFriends){
-
-        }
 
 
-        return true;
-    }
 }
