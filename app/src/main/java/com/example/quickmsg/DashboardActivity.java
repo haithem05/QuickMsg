@@ -36,7 +36,7 @@ public class DashboardActivity extends AppCompatActivity {
             mAuth.signOut();
             sendUserToLogin();}
             if (item.getItemId() == R.id.setings) {
-
+                sendUserToSettings();
             }
 
             if (item.getItemId() == R.id.FindFriends) {
@@ -72,5 +72,11 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(loginIntent);
         finish();
     }
+    private void sendUserToSettings() {
+        Intent settingsIntent = new Intent(DashboardActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
+        finish();
+    }
+
 
 }
