@@ -19,12 +19,12 @@ public class TabsAccesessorAdapter extends FragmentPagerAdapter
             return chatsFragment;
 
             case 1:
-                GroupsFragment groupsFragment= new GroupsFragment();
-                return groupsFragment;
+                FriendsFragment friendsFragment = new FriendsFragment();
+                return friendsFragment;
 
             case 2:
-                ContexFragment contexFragment= new ContexFragment();
-                return contexFragment;
+                ProfileFragment profileFragment = new ProfileFragment();
+                return profileFragment;
              default:
                  return null;
         }

@@ -24,11 +24,13 @@
         android:weightSum="1.8"
         >
         <EditText
+            android:id="@+id/message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="message..."
             android:layout_weight="1.8"/>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"
@@ -36,7 +38,8 @@
             android:tint="@android:color/transparent"
             android:backgroundTintMode="add"
             android:foregroundTintMode="add"
-            android:src="@drawable/ic_send"/>
+            android:src="@drawable/ic_send"
+           />
 
     </LinearLayout>
 

@@ -9,9 +9,36 @@
     android:weightSum="2">
 
 
-    <include
-        android:id="@+id/app_toolbar"
-        layout="@layout/app_bar_layout"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/grey">
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/friends_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_friends"
+            android:text="users"/>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/chat_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_chat"
+            android:text="chat"/>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/profile_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_profile"
+            android:text="profile"/>
+    </com.google.android.material.tabs.TabLayout>
 
-        ></include>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tab_layout">
+
+    </androidx.viewpager.widget.ViewPager>
 </RelativeLayout>

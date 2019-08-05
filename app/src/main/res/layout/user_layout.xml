@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="false"
+    android:focusable="false"
+    android:descendantFocusability="blocksDescendants"
+    >
+    <RelativeLayout
+        android:id="@+id/user_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="false">
+        <ImageView
+            android:id="@+id/user_icon"
+            android:layout_width="80sp"
+            android:layout_height="80sp"
+            android:src="@drawable/iconprofil"
+            android:focusable="false"
+            android:textIsSelectable="false"
+            />
+        <TextView
+            android:id="@+id/user_name"
+
+            android:layout_marginTop="25sp"
+            android:layout_toRightOf="@+id/user_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="normal|bold"
+            android:text="User_name"
+            android:textSize="18sp"
+            android:focusable="false"
+            />
+    </RelativeLayout>
+
+
+
+
+</RelativeLayout>

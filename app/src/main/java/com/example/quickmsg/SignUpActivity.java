@@ -14,6 +14,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView alreadyHaveAccount;
     private FirebaseAuth nAuth;
     private ProgressDialog LoadingnBar;
+    private DatabaseReference rootRef;
 
 
 
@@ -77,6 +80,10 @@ public class SignUpActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+                        rootRef= FirebaseDatabase.getInstance().getReference();
+                        String currentUserID=nAuth.getCurrentUser().getUid();
+                        rootRef.child("Users").child(currentUserID).setValue("");
+
                         sendUserToDashboard();
                         Toast.makeText(SignUpActivity.this, "Account Created successfully...", Toast.LENGTH_SHORT).show();
                         LoadingnBar.dismiss();

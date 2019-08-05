@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatActivity">
+    <Toolbar
+        android:id="@+id/chat_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="70sp"
+        android:background="@android:color/holo_blue_dark"
+
+       >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <ImageView
+                android:id="@+id/friend_icon"
+                android:layout_width="65sp"
+                android:layout_height="65sp"
+                android:src="@drawable/iconprofil"/>
+            <TextView
+                android:id="@+id/friend_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@android:color/white"
+                android:textSize="18dp"
+                android:layout_toEndOf="@id/friend_icon"
+                android:layout_marginTop="14sp"
+                android:textStyle="bold"
+                />
+        </RelativeLayout>
+
+
+
+    </Toolbar>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".DashboardActivity"
+        android:weightSum="2"
+        android:layout_below="@+id/chat_toolbar"
+        >
+
+
+        <ListView
+            android:id="@+id/list_of_messages"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.99"
+            >
+
+        </ListView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1.8"
+            >
+            <EditText
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="message..."
+                android:layout_weight="1.8"/>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/send_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:foregroundTint="@android:color/transparent"
+                android:tint="@android:color/transparent"
+                android:backgroundTintMode="add"
+                android:foregroundTintMode="add"
+                android:src="@drawable/ic_send"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

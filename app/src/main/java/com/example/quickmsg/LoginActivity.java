@@ -14,8 +14,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText email , password ;
     private TextView needNewAcount;
     private FirebaseAuth nAuth;
-    private DatabaseReference rootRef;
+
     private ProgressDialog LoadingnBar;
 
 
@@ -40,8 +39,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         nAuth = FirebaseAuth.getInstance();
-        rootRef=FirebaseDatabase.getInstance().getReference();
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(user!=null)
+            sendUserToDashboard();
 
         initializeFields();
 
@@ -88,8 +90,6 @@ public class LoginActivity extends AppCompatActivity {
                                                @Override
                                                public void onComplete(@NonNull Task<AuthResult> task) {
                                                    if (task.isSuccessful()) {
-                                                       String currentUserID=nAuth.getCurrentUser().getUid();
-                                                       rootRef.child("users").child(currentUserID).setValue("");
 
 
                                                        Toast.makeText(LoginActivity.this, "Account Created successfully...", Toast.LENGTH_SHORT).show();
