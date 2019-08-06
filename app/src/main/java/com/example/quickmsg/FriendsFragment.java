@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 /**
@@ -33,13 +36,14 @@ import androidx.fragment.app.Fragment;
 public class FriendsFragment extends Fragment {
 
 
-    ListView listView;
+    RecyclerView recyclerView;
     String current_user_id;
     RelativeLayout user_container;
 
     DatabaseReference database;
     ArrayList<UserData> users = new ArrayList<UserData>();
-
+    FriendsAdapter mAdapter;
+    RecyclerView.LayoutManager mLayoutManager;
     public FriendsFragment() {
         // Required empty public constructor
     }
@@ -51,15 +55,34 @@ public class FriendsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_groups, container, false);
 
-        listView = view.findViewById(R.id.list_of_users);
+        recyclerView = view.findViewById(R.id.list_of_users);
         user_container = view.findViewById(R.id.user_container);
-        listView.setDescendantFocusability(ListView.FOCUS_BLOCK_DESCENDANTS);
 
 
         current_user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance().getReference();
 
 
+
+
+
+
+
+        getFriends();
+
+        mAdapter = new FriendsAdapter(getActivity(),users);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(mAdapter);
+
+
+        return view;
+    }
+
+
+
+    public void getFriends(){
         database.child("Users").addValueEventListener(new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -69,18 +92,25 @@ public class FriendsFragment extends Fragment {
 
                     user_id = String.valueOf(snapshot.getKey());
 
-                    if (user_id.equals(current_user_id)) {
-                        UserData userData = new UserData(user_id);
+                    System.out.println("user id  friend "+user_id);
+                    if (!user_id.equals(current_user_id) && !userExist(user_id)) {
+
+                        UserData userData = new UserData(user_id,snapshot.child("user_name").getValue().toString(),snapshot.child("user_picture").getValue().toString());
                         users.add(userData);
 
 
-                        UserAdapter userAdapter = new UserAdapter(getActivity(), users);
+                        if(mAdapter!=null)
+                            mAdapter.notifyDataSetChanged();
 
-                        listView.setAdapter(userAdapter);
+
+
                     }
 
 
+
                 }
+                System.out.println("users count : "+users.size());
+
             }
 
             @Override
@@ -88,112 +118,82 @@ public class FriendsFragment extends Fragment {
 
             }
         });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                sendUserToChat(position);
-
-                System.out.println("user position : "+position);
-            }
-
-        });
-
-
-
-        return view;
     }
 
-    class UserAdapter implements ListAdapter {
+    public boolean userExist(String user_id){
+        for (int i = 0; i <users.size() ; i++)
+            if(users.get(i).getUser_id().equals(user_id))
+                return true;
 
-        ArrayList<UserData> arrayList;
-        Context context;
-
-        public UserAdapter(Context context, ArrayList<UserData> arrayList) {
-            this.arrayList = arrayList;
-            this.context = context;
-        }
-
-        @Override
-        public boolean areAllItemsEnabled() {
-            return true;
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            return true;
-        }
-
-        @Override
-        public void registerDataSetObserver(DataSetObserver observer) {
-
-        }
-
-        @Override
-        public void unregisterDataSetObserver(DataSetObserver observer) {
-
-        }
-
-        @Override
-        public int getCount() {
-            return arrayList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return false;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            UserData userData = arrayList.get(position);
-            if (convertView == null) {
-                LayoutInflater layoutInflater = LayoutInflater.from(context);
-                convertView = layoutInflater.inflate(R.layout.user_layout, null);
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
-                });
-                TextView user_name = convertView.findViewById(R.id.user_name);
-                user_name.setText(userData.getUser_id());
-
-            }
-            convertView.setClickable(false);
-
-            return convertView;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return position;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return arrayList.size();
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-    }
-
-    public void sendUserToChat(int position){
-        Intent i = new Intent(getActivity(),ChatActivity.class);
-        i.putExtra("user_id",users.get(position).getUser_id());
-        startActivity(i);
+    return false;
 
     }
 }
+
+class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHolder>{
+
+    ArrayList<UserData> arrayList;
+    Context context;
+    public FriendsAdapter(Context context, ArrayList<UserData> arrayList) {
+        this.arrayList=arrayList;
+        this.context=context;
+    }
+
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.user_layout, parent, false);
+
+
+
+        return new MyViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
+         UserData userData = arrayList.get(position);
+
+        holder.user_name.setText(userData.getUser_name());
+
+
+        holder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendUserToChat(context,position);
+            }
+        });
+
+    }
+
+    @Override
+    public int getItemCount() {
+        System.out.println("users count : "+arrayList.size());
+        return arrayList.size();
+    }
+
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        public TextView user_name, user_id;
+        public ImageView user_icon;
+        public RelativeLayout container;
+
+        public MyViewHolder(View view) {
+            super(view);
+            user_name = (TextView) view.findViewById(R.id.user_name);
+            container = view.findViewById(R.id.user_container);
+
+        }
+    }
+
+    public void sendUserToChat(Context context,int position){
+        Intent i = new Intent(context,ChatActivity.class);
+        i.putExtra("user_id",arrayList.get(position).getUser_id());
+        i.putExtra("user_name",arrayList.get(position).getUser_name());
+        i.putExtra("user_picture",arrayList.get(position).getUser_picture());
+        context.startActivity(i);
+
+    }
+}
+
+

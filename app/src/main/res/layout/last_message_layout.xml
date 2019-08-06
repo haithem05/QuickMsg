@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:focusable="false"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    >
 
 
 
@@ -9,7 +13,9 @@
         android:id="@+id/user_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="false">
+        android:focusable="false"
+        android:clickable="false"
+        >
 
         <TextView
             android:id="@+id/message_time"
@@ -17,7 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/user_icon_container"
-
+            android:focusable="false"
+            android:clickable="false"
             android:text="hh:mm:ss"
             android:layout_marginTop="5sp"
             android:layout_marginEnd="5sp"
@@ -25,7 +32,10 @@
         <LinearLayout
             android:id="@+id/user_icon_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="false"
+            >
             <ImageView
                 android:id="@+id/message_user"
                 android:layout_width="40sp"
@@ -35,21 +45,44 @@
                 android:src="@drawable/iconprofil"
                 android:focusable="false"
                 android:textIsSelectable="false"
+                android:clickable="false"
                 />
-
-            <TextView
-                android:id="@+id/message_text"
-
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_alignRight="@+id/user_icon"
                 android:layout_marginTop="25sp"
                 android:layout_toEndOf="@+id/user_icon"
                 android:layout_toRightOf="@+id/user_icon"
                 android:focusable="false"
-                android:text="User_name"
-                android:textSize="18sp"
-                android:textStyle="normal|bold" />
+                android:clickable="false"
+                >
+                <TextView
+                    android:id="@+id/user_name"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:text="Jhon Doe"
+                    android:textSize="20sp"
+                    android:textStyle="normal|bold"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:id="@+id/message_text"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:focusable="false"
+                    android:text="No Messages..."
+                    android:textSize="15sp"
+                    android:textStyle="normal|bold"
+                    android:clickable="false"/>
+            </LinearLayout>
+
+
         </LinearLayout>
 
     </RelativeLayout>

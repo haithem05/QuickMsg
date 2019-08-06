@@ -15,6 +15,11 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,8 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth nAuth;
 
     private ProgressDialog LoadingnBar;
+     FirebaseUser user;
 
-
+     DatabaseReference databaseReference;
 
 
     @Override
@@ -40,10 +46,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         nAuth = FirebaseAuth.getInstance();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+          user = FirebaseAuth.getInstance().getCurrentUser();
+         databaseReference =  FirebaseDatabase.getInstance().getReference();
 
-        if(user!=null)
-            sendUserToDashboard();
+
 
         initializeFields();
 
@@ -65,7 +71,42 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+    private void checkUsername(){
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference.child("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
+
+                    UserData userData = new UserData(snapshot.child("user_id").getValue().toString(),snapshot.child("user_name").getValue().toString(),snapshot.child("user_picture").getValue().toString());
+
+                    System.out.println(" user id : "+userData.getUser_id());
+
+                    if(userData.getUser_id().equals(user.getUid())){
+                            if(userData.getUser_name().equals(""))
+                                sendUserToSettings();
+
+                            else
+                                    sendUserToDashboard();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void sendUserToSettings () {
+        Intent settings = new Intent(this,SettingsActivity.class);
+        settings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(settings);
+        finish();
+    }
     private void AllowUserToLogin() {
         String Email = email.getText().toString();
         String Password = password.getText().toString();
@@ -94,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                                        Toast.makeText(LoginActivity.this, "Account Created successfully...", Toast.LENGTH_SHORT).show();
                                                        LoadingnBar.dismiss();
-                                                       sendUserToDashboard();
+                                                       checkUsername();
                                                    } else {
                                                        String message = task.getException().toString();
                                                        Toast.makeText(LoginActivity.this, "Error :" + message, Toast.LENGTH_SHORT).show();

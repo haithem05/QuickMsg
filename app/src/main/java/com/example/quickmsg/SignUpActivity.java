@@ -41,7 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
            alreadyHaveAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendUserToDashboard();
+                sendUserToLogin();
             }
         });
            SignUpButton.setOnClickListener(new View.OnClickListener() {
@@ -82,9 +82,10 @@ public class SignUpActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         rootRef= FirebaseDatabase.getInstance().getReference();
                         String currentUserID=nAuth.getCurrentUser().getUid();
-                        rootRef.child("Users").child(currentUserID).setValue("");
-
-                        sendUserToDashboard();
+                        rootRef.child("Users").child(currentUserID).child("user_id").setValue(currentUserID);
+                        rootRef.child("Users").child(currentUserID).child("user_name").setValue("");
+                        rootRef.child("Users").child(currentUserID).child("user_picture").setValue("");
+                        sendToSettings();
                         Toast.makeText(SignUpActivity.this, "Account Created successfully...", Toast.LENGTH_SHORT).show();
                         LoadingnBar.dismiss();
                     } else {
@@ -104,10 +105,11 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void sendUserToDashboard () {
-        Intent dashboardIntent = new Intent(SignUpActivity.this,DashboardActivity.class);
-        dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(dashboardIntent);
+
+    private void sendToSettings () {
+        Intent settings = new Intent(SignUpActivity.this,SettingsActivity.class);
+        settings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(settings);
         finish();
     }
 
@@ -129,6 +131,12 @@ public class SignUpActivity extends AppCompatActivity {
         LoadingnBar.setMessage("please wait,while we are creating new account for you .....");
         LoadingnBar.setCanceledOnTouchOutside(true);
         LoadingnBar.show();
+    }
+    private void sendUserToLogin(){
+        Intent login = new Intent(SignUpActivity.this,LoginActivity.class);
+        login.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(login);
+        finish();
     }
 
 }
