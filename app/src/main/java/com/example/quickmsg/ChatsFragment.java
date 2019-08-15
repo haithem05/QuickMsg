@@ -66,7 +66,6 @@ public class ChatsFragment extends Fragment {
         database =  FirebaseDatabase.getInstance().getReference();
 
 
-        System.out.println("users : ");
         database.child("Users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -76,14 +75,14 @@ public class ChatsFragment extends Fragment {
                         UserData userData = new UserData();
                         userData.setUser_id(snapshot.child("user_id").getValue().toString());
                         userData.setUser_name(snapshot.child("user_name").getValue().toString());
+
+                        System.out.println("ouss : "+snapshot.child("user_name").getValue().toString());
                         users.add(userData);
 
                     }
 
                 }
-                System.out.println("users 11 :"+users.size());
 
-                System.out.println("success 11");
 
 
                 database.child("Messages").addValueEventListener(new ValueEventListener() {
@@ -92,23 +91,14 @@ public class ChatsFragment extends Fragment {
                              ChatMessage last_message = new ChatMessage();
                         for (final DataSnapshot snapshot: dataSnapshot.getChildren()) {
 
-                            String message_id;
-                            String message_text;
-                            String from_user_id;
-                            String to_user_id;
-                            long message_time;
 
                             final ChatMessage chatMessage = snapshot.getValue(ChatMessage.class);
-                            System.out.println("chat 11 :"+chatMessage.getFrom_user_id());
 
 
 
 
-                                System.out.println("chat m : "+chatMessage.getfrom_user());
                                 if(chatMessage.getfrom_user()!=null ){
 
-                                    System.out.println("from : "+chatMessage.getFrom_user_id()+" to : "+chatMessage.getTo_user_id());
-                                    System.out.println("from user : "+current_user_id+" to : "+users.get(i));
                                     if((chatMessage.getFrom_user_id().equals(current_user_id) && chatMessage.getTo_user_id().equals(users.get(i).getUser_id()))|| (chatMessage.getFrom_user_id().equals(users.get(i).getUser_id()) && chatMessage.getTo_user_id().equals(current_user_id))){
 
                                         last_message.setMessage_id(chatMessage.getMessage_id());
@@ -118,13 +108,11 @@ public class ChatsFragment extends Fragment {
                                         last_message.setMessage_text(chatMessage.getMessage_text());
                                         last_message.setMessage_time(chatMessage.getMessage_time());
 
-                                        System.out.println("message in "+last_message.getMessage_text());
                                     }
 
                                 }
                             }
 
-                            System.out.println("last messages : "+last_message.getMessage_text());
                             if(last_message.getMessage_text()!=null){
 
                                 if(chatMessages.size()!=0){
@@ -149,16 +137,11 @@ public class ChatsFragment extends Fragment {
                             }
 
 
-                            System.out.println("chat messages size :"+chatMessages.size());
 
                         }
-//                        ChatAdapter chatAdapter = new ChatAdapter(getActivity(), chatMessages);
-//
-//                        System.out.println("adapter chat : "+chatAdapter);
-//                        listView.setAdapter(chatAdapter);
 
 
-                          mAdapter = new ChatAdapter(getActivity(),chatMessages,current_user_id);
+                          mAdapter = new ChatAdapter(getActivity(),chatMessages,current_user_id,users);
                          mLayoutManager = new LinearLayoutManager(getActivity());
 
                         recyclerView.setLayoutManager(mLayoutManager);
@@ -199,12 +182,14 @@ public class ChatsFragment extends Fragment {
 class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder>{
 
     ArrayList<ChatMessage> arrayList;
+    ArrayList<UserData> users;
     Context context;
     String current_user_id;
-    public ChatAdapter(Context context, ArrayList<ChatMessage> arrayList,String current_user_id) {
+    public ChatAdapter(Context context, ArrayList<ChatMessage> arrayList,String current_user_id,    ArrayList<UserData> users) {
         this.arrayList=arrayList;
         this.context=context;
         this.current_user_id=current_user_id;
+        this.users=users;
     }
 
     @NonNull
@@ -224,23 +209,46 @@ class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder>{
 
         holder.message_text.setText(chatMessage.getMessage_text());
         holder.message_time.setText(new SimpleDateFormat("dd/mm/yyyy HH:mm").format(new Date(chatMessage.getMessage_time())));
-        if(!chatMessage.getfrom_user().equals(current_user_id))
-          holder.user_name.setText(chatMessage.getfrom_user());
-        else
+        if(!chatMessage.getFrom_user_id().equals(current_user_id)){
+            holder.user_name.setText(chatMessage.getfrom_user());
+            System.out.println("1- current : "+current_user_id+" list : "+arrayList.get(position).getTo_user_id());
+            holder.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendUserToChat(context,arrayList.get(position).getFrom_user_id(),getUserName(arrayList.get(position).getFrom_user_id()));
+                }
+            });
+        }
+        else{
+            System.out.println("2- current : "+current_user_id+" list : "+arrayList.get(position).getTo_user_id());
+
             holder.user_name.setText(chatMessage.getTo_user());
+            holder.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendUserToChat(context,arrayList.get(position).getTo_user_id(),getUserName(arrayList.get(position).getTo_user_id()));
+                }
+            });
 
-        holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendUserToChat(context,arrayList.get(position).getTo_user_id());
+        }
+
+
+    }
+
+    public String getUserName(String user_id){
+        for (int i = 0; i <users.size() ; i++) {
+            System.out.println("user ouss :" +users.get(i).getUser_name()+" user id :"+user_id+" x : "+users.get(i).getUser_id());
+
+            if(users.get(i).getUser_id().equals(user_id)){
+                return users.get(i).getUser_name();
+
             }
-        });
-
+        }
+        return "";
     }
 
     @Override
     public int getItemCount() {
-        System.out.println("users count : "+arrayList.size());
         return arrayList.size();
     }
 
@@ -262,9 +270,12 @@ class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder>{
         }
     }
 
-    public void sendUserToChat(Context context,String user_id){
+    public void sendUserToChat(Context context,String user_id,String user_name){
         Intent i = new Intent(context,ChatActivity.class);
         i.putExtra("user_id",user_id);
+        i.putExtra("user_name",user_name);
+
+        System.out.println("user id : "+user_id+" user name : "+user_name);
         context.startActivity(i);
 
     }

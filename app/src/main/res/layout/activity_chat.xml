@@ -61,25 +61,42 @@
         </androidx.recyclerview.widget.RecyclerView>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50sp"
+
+            android:background="@android:color/transparent"
             android:orientation="horizontal"
             android:weightSum="1.8"
             >
+
             <EditText
                 android:id="@+id/message"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="message..."
-                android:layout_weight="1.8"/>
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_height="40sp"
+                android:layout_weight="1.8"
+                android:background="@drawable/rounded_borders"
+                android:hint="Type a message..."
+                android:maxLines="1"
+                android:padding="10sp"
+                android:paddingStart="15sp"
+                android:backgroundTint="@drawable/rounded_borders"
+                back
+
+                android:layout_marginTop="5sp"
+                android:layout_marginBottom="5sp"
+                android:layout_marginStart="5sp"
+                android:layout_marginEnd="5sp"
+                android:singleLine="true" />
+            <ImageView
                 android:id="@+id/send_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30sp"
+                android:layout_height="match_parent"
                 android:backgroundTint="@android:color/transparent"
                 android:foregroundTint="@android:color/transparent"
                 android:tint="@android:color/transparent"
                 android:backgroundTintMode="add"
                 android:foregroundTintMode="add"
+                android:layout_marginEnd="4sp"
+                android:layout_marginBottom="0sp"
                 android:src="@drawable/ic_send"
                 />
 

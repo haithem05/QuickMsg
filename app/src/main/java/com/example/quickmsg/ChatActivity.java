@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -41,7 +43,7 @@ public class ChatActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     EditText message;
-    FloatingActionButton send_button;
+    ImageView send_button;
     String friend_id;
     String friend_name_;
     String friend_picture;
@@ -54,6 +56,7 @@ public class ChatActivity extends AppCompatActivity {
     String current_user_name = "";
     ArrayList<ChatMessage> messages ;
 
+    String current_user_id;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     @Override
@@ -73,7 +76,10 @@ public class ChatActivity extends AppCompatActivity {
         friend_name.setText(friend_name_);
         friend_icon.setImageResource(R.drawable.iconprofil);
 
-           FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+        current_user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+        FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 current_user_name  = dataSnapshot.child("user_name").getValue().toString();
@@ -84,7 +90,7 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
-    messages = new ArrayList<>();
+        messages = new ArrayList<>();
 
         loadMessages();
 
@@ -143,9 +149,7 @@ public class ChatActivity extends AppCompatActivity {
     public void loadMessages(){
 
         DatabaseReference database ;
-        final String current_user_id ;
         database =  FirebaseDatabase.getInstance().getReference();
-        current_user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
         database.child("Messages").addValueEventListener(new ValueEventListener() {
@@ -209,8 +213,8 @@ public class ChatActivity extends AppCompatActivity {
 class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder>{
 
     ArrayList<ChatMessage> arrayList;
-    Context context;
-    public MessageAdapter(Context context, ArrayList<ChatMessage> arrayList) {
+    ChatActivity context;
+    public MessageAdapter(ChatActivity context, ArrayList<ChatMessage> arrayList) {
         this.arrayList=arrayList;
         this.context=context;
     }
@@ -229,11 +233,26 @@ class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder>{
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ChatMessage chatMessage = arrayList.get(position);
 
-        holder.message_text.setText(chatMessage.getMessage_text());
-        if(new SimpleDateFormat("dd/mm/yyyy").format(new Date(chatMessage.getMessage_time())).equals(new SimpleDateFormat("dd/mm/yyyy").format(new Date())))
-           holder.message_time.setText(new SimpleDateFormat("HH:mm").format(new Date(chatMessage.getMessage_time())));
-        else
-        holder.message_time.setText(new SimpleDateFormat("dd/mm/yyyy HH:mm").format(new Date(chatMessage.getMessage_time())));
+
+        if(chatMessage.getFrom_user_id().equals(context.current_user_id)){
+            holder.message_sended_container.setVisibility(View.VISIBLE);
+            holder.message_sended.setText(chatMessage.getMessage_text());
+
+        }else{
+            holder.message_received_container.setVisibility(View.VISIBLE);
+            holder.message_received.setText(chatMessage.getMessage_text());
+
+        }
+
+
+
+
+
+
+//        if(new SimpleDateFormat("dd/mm/yyyy").format(new Date(chatMessage.getMessage_time())).equals(new SimpleDateFormat("dd/mm/yyyy").format(new Date())))
+//           holder.message_time.setText(new SimpleDateFormat("HH:mm").format(new Date(chatMessage.getMessage_time())));
+//        else
+//        holder.message_time.setText(new SimpleDateFormat("dd/mm/yyyy HH:mm").format(new Date(chatMessage.getMessage_time())));
 
 
     }
@@ -245,13 +264,19 @@ class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder>{
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView message_text, message_time;
-        public ImageView message_user;
+        public TextView message_sended, message_time,message_received;
+        public ImageView message_user,friend_icon;
+        public LinearLayout message_received_container;
+        public RelativeLayout message_sended_container;
 
         public MyViewHolder(View view) {
             super(view);
-            message_text = (TextView) view.findViewById(R.id.message_text);
+            message_sended = (TextView) view.findViewById(R.id.message_text);
             message_time = (TextView) view.findViewById(R.id.message_time);
+            message_received_container =  view.findViewById(R.id.message_received_container);
+            message_sended_container =  view.findViewById(R.id.message_sended);
+            message_received =  view.findViewById(R.id.message_received);
+            friend_icon =  view.findViewById(R.id.friend_icon);
 //            message_user = view.findViewById(R.id.message_user);
         }
     }
