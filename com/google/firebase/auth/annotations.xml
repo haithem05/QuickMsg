@@ -1,0 +1,5 @@
+<root>
+    <item name='com.google.firebase.auth.FirebaseUser java.lang.String getUid()'>
+        <annotation name='org.jetbrains.annotations.NotNull' />
+    </item>
+</root>

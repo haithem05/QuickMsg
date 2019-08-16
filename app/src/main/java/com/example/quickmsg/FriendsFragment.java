@@ -93,7 +93,7 @@ public class FriendsFragment extends Fragment {
                     user_id = String.valueOf(snapshot.getKey());
 
                     System.out.println("user id  friend "+user_id);
-                    if (!user_id.equals(current_user_id) && !userExist(user_id)) {
+                    if (!user_id.equals(current_user_id) && !userExist(user_id) && snapshot.child("user_name").getValue()!=null) {
 
                         UserData userData = new UserData(user_id,snapshot.child("user_name").getValue().toString(),snapshot.child("user_picture").getValue().toString());
                         users.add(userData);

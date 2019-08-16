@@ -11,6 +11,12 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +33,9 @@ public class DashboardActivity extends AppCompatActivity {
     private TabItem chat_tab;
     private TabItem profile_tab;
     private TabLayout tabLayout;
+    private String userId;
+    private DatabaseReference RootRef;
+
 
 
     @Override
@@ -37,6 +46,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         mAuth =FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+RootRef= FirebaseDatabase.getInstance().getReference();
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
@@ -128,8 +139,25 @@ public class DashboardActivity extends AppCompatActivity {
 
         else
         {
+            status("online");
 VerifyUserExistances();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(currentUser!=null){
+            status("offline");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(currentUser!=null){
+            status("online");
+        }
+        super.onDestroy();
     }
 
     private void VerifyUserExistances() {
@@ -193,4 +221,20 @@ VerifyUserExistances();
 
 
     }
+    public void status(String status){
+        String saveCurrentTime ;
+        String   saveCurrentDate;
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd,YYYY");
+        saveCurrentDate=currentDate.format(calendar.getTime());
+        HashMap<String,Object> onlineStatus = new HashMap<>();
+        onlineStatus.put("date",saveCurrentDate);
+       /* onlineStatus.put("time",saveCurrentTime);*/
+        onlineStatus.put("status",status);
+        userId=mAuth.getCurrentUser().getUid();
+        RootRef.child("users").child(userId).child("userStatus")
+                .updateChildren(onlineStatus);
+    }
+
+
 }

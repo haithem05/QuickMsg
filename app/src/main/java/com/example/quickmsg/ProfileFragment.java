@@ -19,11 +19,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class ProfileFragment extends Fragment {
 
-   private TextView logout,change_account ;
+
+    private TextView logout,change_account ;
     private Button bnt_setting;
     private EditText hey,userName;
     private CircleImageView profile;
-
+    private static final int GalleryPic=1;
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -58,7 +59,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
+profile.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Intent galleryIntent = new Intent();
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/'");
+        startActivityForResult(galleryIntent,GalleryPic);
+    }
+});
         return view;
     }
 
@@ -67,6 +76,13 @@ public class ProfileFragment extends Fragment {
         startActivity(AddAccountIntent);
         getActivity().finish();
     }
+
+  /* @Override
+   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+if(resultCode== Result_ok )
+    }*/
 
     private void sendUserToLogin() {
         Intent logoutIntent = new Intent(getActivity(),LoginActivity.class);
