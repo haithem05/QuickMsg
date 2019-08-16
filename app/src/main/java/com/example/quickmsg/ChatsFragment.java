@@ -71,7 +71,7 @@ public class ChatsFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for ( DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     System.out.println(" snap shot :"+snapshot.getKey());
-                    if(!snapshot.getKey().equals(current_user_id)){
+                    if(!snapshot.getKey().equals(current_user_id) && snapshot.child("user_id").getValue()!=null){
                         UserData userData = new UserData();
                         userData.setUser_id(snapshot.child("user_id").getValue().toString());
                         userData.setUser_name(snapshot.child("user_name").getValue().toString());
@@ -210,8 +210,11 @@ class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder>{
         holder.message_text.setText(chatMessage.getMessage_text());
         holder.message_time.setText(new SimpleDateFormat("dd/mm/yyyy HH:mm").format(new Date(chatMessage.getMessage_time())));
         if(!chatMessage.getFrom_user_id().equals(current_user_id)){
-            holder.user_name.setText(chatMessage.getfrom_user());
-            System.out.println("1- current : "+current_user_id+" list : "+arrayList.get(position).getTo_user_id());
+            if(chatMessage.getfrom_user().isEmpty())
+                holder.user_name.setText(chatMessage.getTo_user());
+
+            else
+               holder.user_name.setText(chatMessage.getfrom_user());
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -220,9 +223,11 @@ class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder>{
             });
         }
         else{
-            System.out.println("2- current : "+current_user_id+" list : "+arrayList.get(position).getTo_user_id());
 
-            holder.user_name.setText(chatMessage.getTo_user());
+            if(chatMessage.getTo_user().isEmpty())
+                holder.user_name.setText(chatMessage.getfrom_user());
+            else
+                holder.user_name.setText(chatMessage.getTo_user());
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -154,6 +154,7 @@ public class ChatActivity extends AppCompatActivity {
 
         database.child("Messages").addValueEventListener(new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
+                messages.removeAll(messages);
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
 
                     String message_id;
@@ -173,6 +174,7 @@ public class ChatActivity extends AppCompatActivity {
                         from_user = String.valueOf(snapshot.child("from_user").getValue());
                         to_user = String.valueOf(snapshot.child("to_user").getValue());
                         message_time = Long.parseLong(String.valueOf(snapshot.child("message_time").getValue()));
+
 
 
                         ChatMessage chatMessage = new ChatMessage(message_id,message_text,from_user,to_user,from_user_id,to_user_id,message_time);
